@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using EQBrowser;
  
 public class JoystickScript : MonoBehaviour {
 	public GameObject Character;
@@ -20,6 +21,15 @@ public class JoystickScript : MonoBehaviour {
 	public float speed;
 	public float rotatespeed;
 	
+	public WorldConnect WorldConnection;
+	
+	public float distanceTravelled = 0;
+	public Vector3 lastPosition;
+
+	public float rotationTravelled = 0;
+	public Vector3 lastRotation;
+
+
 
 	void Start()
 	{
@@ -30,6 +40,26 @@ public class JoystickScript : MonoBehaviour {
 	}
 	void Update () 
 	{
+		
+		distanceTravelled += Vector3.Distance(Character.transform.position, lastPosition);
+		lastPosition = Character.transform.position;
+				
+		rotationTravelled += Vector3.Distance(Character.transform.eulerAngles, lastRotation);
+		lastRotation = Character.transform.eulerAngles;
+				
+		if(distanceTravelled > 10)
+		{
+			distanceTravelled = 0;
+			WorldConnection.DoClientUpdate();
+		}
+	
+		if(rotationTravelled > 20)
+		{
+			rotationTravelled = 0;
+			WorldConnection.DoClientUpdate();
+		}
+				
+				
 		if (_isMoveup == true)
 		{ 
 			controller.SimpleMove(Character.transform.forward*speed);
@@ -85,6 +115,8 @@ public class JoystickScript : MonoBehaviour {
 			if(y < 50){Camera.GetComponent<SmoothFollow>().y += 1;}
 			
 		}
+		
+		
 		
 	}
 			

@@ -109,10 +109,9 @@ namespace EQBrowser
 		
 		public void DoTarget(string targetID)
 		{
-//			Debug.Log("targetID: " + targetID);
+			Debug.Log("targetID: " + targetID);
 			int targetInt = int.Parse(targetID);
 			OurTargetID = targetInt;
-
 				
 //			GameObject temp = ObjectPool.instance.spawnlist.Where(obj => obj.name == targetID).SingleOrDefault();
 			GameObject temp = ObjectPool.instance.spawnlist.FirstOrDefault(obj => obj.name == targetID); 
@@ -121,7 +120,10 @@ namespace EQBrowser
 				string targetName = temp.GetComponent<NPCController>().name;
 				int curhp = temp.GetComponent<NPCController>().curHp;
 				int maxhp = temp.GetComponent<NPCController>().maxHp;
+				
 				temp.GetComponent<NPCController>().isTarget = true;
+				
+				int isDead = temp.GetComponent<NPCController>().isDead;
 	
 				string targetClean = Regex.Replace(targetName, "[0-9]", "");
 				string targetName2 = Regex.Replace(targetClean, "[_]", " ");
@@ -129,13 +131,24 @@ namespace EQBrowser
 				UIScript.TargetBox.SetActive(true);
 				UIScript.TargetName.text = targetName3;
 	
-				float hpPercent = ((float)curhp/(float)maxhp)*100;
-				UIScript.TargetHP.sizeDelta = new Vector2( (int)hpPercent, 10);
-				UIScript.TargetHPText.text = ((int)hpPercent + "%");
-				
+				if(isDead == 0)
+				{
+					UIScript.LootButtonPanel.SetActive(false);
+					UIScript.TargetHPPanel.SetActive(true);
+					float hpPercent = ((float)curhp/(float)maxhp)*100;
+					UIScript.TargetHP.sizeDelta = new Vector2( (int)hpPercent, 10);
+					UIScript.TargetHPText.text = ((int)hpPercent + "%");
+				}
+				else
+				{
+					UIScript.LootButtonPanel.SetActive(true);
+					UIScript.TargetHPPanel.SetActive(false);	
+				}
 			}
 			else
 			{
+				UIScript.LootButtonPanel.SetActive(false);
+				UIScript.TargetHPPanel.SetActive(false);	
 				UIScript.TargetBox.SetActive(false);
 			}
 			byte[] TargetMouseRequest = new byte[4];
@@ -857,7 +870,6 @@ namespace EQBrowser
 //			GameObject temp = ObjectPool.instance.spawnlist.Where(obj => obj.name == spawn_id.ToString()).SingleOrDefault();
 
 			GameObject temp = null;
-
 			if(isDead == false){temp = ObjectPool.instance.spawnlist.FirstOrDefault(obj => obj.name == spawn_id.ToString());}
 			if(temp != null)
 			{
@@ -910,7 +922,6 @@ namespace EQBrowser
 			float rotation = BitConverter.ToSingle(BitConverter.GetBytes(ReadInt32(data, ref position)), 0);
 			
 			GameObject temp = null;
-//			GameObject temp = ObjectPool.instance.spawnlist.Where(obj => obj.name == spawn_id.ToString()).SingleOrDefault();
 			if(isDead == false){temp = ObjectPool.instance.spawnlist.FirstOrDefault(obj => obj.name == spawn_id.ToString());}
 //			GameObject temp = ObjectPool.instance.spawndict[spawn_id];
 

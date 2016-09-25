@@ -87,6 +87,10 @@ public class UIScripts : MonoBehaviour {
 	public GameObject ExpandChatText;
 	public GameObject MinimizeChatText;
 	
+	public GameObject LootButton;
+	public GameObject LootButtonPanel;
+	public GameObject TargetHPPanel;
+	
 	public Text profileName;
 	public RectTransform OurHP;
 	public Text HPText;
@@ -154,8 +158,17 @@ public class UIScripts : MonoBehaviour {
 		SpellGem6.GetComponent<Button>().onClick.AddListener(delegate { SpellGem6Click (param2); });
 		SpellGem7.GetComponent<Button>().onClick.AddListener(delegate { SpellGem7Click (param2); });
 		SpellGem8.GetComponent<Button>().onClick.AddListener(delegate { SpellGem8Click (param2); });
+		
+		LootButton.GetComponent<Button>().onClick.AddListener(delegate { LootButtonClick (param2); });
 
 	}
+	
+	public void LootButtonClick(string param2)
+	{
+		WorldConnection2.DoLoot(WorldConnection2.OurTargetID.ToString());
+	}
+	
+	
 	public void SpellGem1Click(string param2)
 	{
 		UIScripts.CastButton = true;
